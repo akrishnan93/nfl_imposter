@@ -3,6 +3,43 @@
 // Medium: Current players + historic legends
 // Hard: Lesser-known players, backups, specialists
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const CACHE_KEY = 'usedPlayers';
+
+// Get used players from cache
+const getUsedPlayers = async (difficulty) => {
+  try {
+    const cache = await AsyncStorage.getItem(CACHE_KEY);
+    const parsed = cache ? JSON.parse(cache) : {};
+    return parsed[difficulty] || [];
+  } catch {
+    return [];
+  }
+};
+
+// Save used player to cache
+const saveUsedPlayer = async (difficulty, playerName) => {
+  try {
+    const cache = await AsyncStorage.getItem(CACHE_KEY);
+    const parsed = cache ? JSON.parse(cache) : {};
+    const used = parsed[difficulty] || [];
+    used.push(playerName);
+
+    // Reset if all players used
+    const totalPlayers = players[difficulty].length;
+    if (used.length >= totalPlayers) {
+      parsed[difficulty] = [];
+    } else {
+      parsed[difficulty] = used;
+    }
+
+    await AsyncStorage.setItem(CACHE_KEY, JSON.stringify(parsed));
+  } catch (e) {
+    console.log('Cache save error:', e);
+  }
+};
+
 export const players = {
   easy: [
     // Quarterbacks
@@ -186,10 +223,23 @@ export const players = {
   ],
 };
 
-export const getRandomPlayer = (difficulty) => {
+export const getRandomPlayer = async (difficulty) => {
   const playerList = players[difficulty];
-  const randomIndex = Math.floor(Math.random() * playerList.length);
-  return playerList[randomIndex];
+  const usedPlayers = await getUsedPlayers(difficulty);
+
+  // Filter out used players
+  const available = playerList.filter(p => !usedPlayers.includes(p.name));
+
+  // If all used (shouldn't happen but safety), use full list
+  const pool = available.length > 0 ? available : playerList;
+
+  const randomIndex = Math.floor(Math.random() * pool.length);
+  const selected = pool[randomIndex];
+
+  // Save to cache
+  await saveUsedPlayer(difficulty, selected.name);
+
+  return selected;
 };
 
 export const getCategoryLabel = (difficulty, player) => {

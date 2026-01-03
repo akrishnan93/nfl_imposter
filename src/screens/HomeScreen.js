@@ -14,9 +14,9 @@ export default function HomeScreen({ navigation }) {
   const [playerCount, setPlayerCount] = useState(4);
   const [difficulty, setDifficulty] = useState('easy');
 
-  const handleStart = () => {
+  const handleStart = async () => {
     // Pick a random NFL player based on difficulty
-    const player = getRandomPlayer(difficulty);
+    const player = await getRandomPlayer(difficulty);
 
     // Pick a random imposter (0 to playerCount-1)
     const imposterIndex = Math.floor(Math.random() * playerCount);
