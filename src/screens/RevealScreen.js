@@ -8,8 +8,9 @@ import {
 } from 'react-native';
 
 export default function RevealScreen({ route, navigation }) {
-  const { playerCount, secretPlayer, imposterIndex, currentPlayer } = route.params;
+  const { playerCount, secretPlayer, secretPlayerPosition, secretPlayerCategory, imposterIndex, currentPlayer, difficulty } = route.params;
   const [isRevealed, setIsRevealed] = useState(false);
+  const [showHint, setShowHint] = useState(false);
 
   const isImposter = currentPlayer === imposterIndex;
   const isLastPlayer = currentPlayer === playerCount - 1;
@@ -26,8 +27,11 @@ export default function RevealScreen({ route, navigation }) {
       navigation.push('Reveal', {
         playerCount,
         secretPlayer,
+        secretPlayerPosition,
+        secretPlayerCategory,
         imposterIndex,
         currentPlayer: currentPlayer + 1,
+        difficulty,
       });
     }
   };
@@ -72,6 +76,19 @@ export default function RevealScreen({ route, navigation }) {
                   You don't know the player.{'\n'}
                   Blend in and don't get caught!
                 </Text>
+                <TouchableOpacity
+                  style={styles.hintButton}
+                  onPress={() => setShowHint(!showHint)}
+                >
+                  <Text style={styles.hintButtonText}>
+                    {showHint ? 'HIDE HINT' : 'SHOW HINT'}
+                  </Text>
+                </TouchableOpacity>
+                {showHint && (
+                  <Text style={styles.hintText}>
+                    {secretPlayerPosition} - {secretPlayerCategory}
+                  </Text>
+                )}
               </>
             ) : (
               // Regular player view
@@ -221,5 +238,24 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#5a6a7a',
     fontWeight: 'bold',
+  },
+  hintButton: {
+    backgroundColor: '#1e3a5f',
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 8,
+    marginTop: 16,
+  },
+  hintButtonText: {
+    fontSize: 14,
+    color: '#8892a0',
+    fontWeight: '600',
+    letterSpacing: 1,
+  },
+  hintText: {
+    fontSize: 18,
+    color: '#f59e0b',
+    fontWeight: 'bold',
+    marginTop: 12,
   },
 });

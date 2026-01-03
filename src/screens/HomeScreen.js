@@ -6,7 +6,7 @@ import {
   StyleSheet,
   SafeAreaView,
 } from 'react-native';
-import { getRandomPlayer } from '../data/players';
+import { getRandomPlayer, getCategoryLabel } from '../data/players';
 
 const DIFFICULTIES = ['easy', 'medium', 'hard'];
 
@@ -16,16 +16,19 @@ export default function HomeScreen({ navigation }) {
 
   const handleStart = () => {
     // Pick a random NFL player based on difficulty
-    const secretPlayer = getRandomPlayer(difficulty);
+    const player = getRandomPlayer(difficulty);
 
     // Pick a random imposter (0 to playerCount-1)
     const imposterIndex = Math.floor(Math.random() * playerCount);
 
     navigation.navigate('Reveal', {
       playerCount,
-      secretPlayer,
+      secretPlayer: player.name,
+      secretPlayerPosition: player.position,
+      secretPlayerCategory: getCategoryLabel(difficulty, player),
       imposterIndex,
       currentPlayer: 0,
+      difficulty,
     });
   };
 
