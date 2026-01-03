@@ -15,6 +15,9 @@ export default function GameEndScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
+      <TouchableOpacity style={styles.resetButton} onPress={handlePlayAgain}>
+        <Text style={styles.resetButtonText}>X</Text>
+      </TouchableOpacity>
       <View style={styles.content}>
         <Text style={styles.title}>GAME ON!</Text>
         <Text style={styles.subtitle}>Everyone has seen their role</Text>
@@ -106,5 +109,22 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontWeight: 'bold',
     letterSpacing: 2,
+  },
+  resetButton: {
+    position: 'absolute',
+    top: 50,
+    right: 20,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#1e3a5f',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 10,
+  },
+  resetButtonText: {
+    fontSize: 18,
+    color: '#5a6a7a',
+    fontWeight: 'bold',
   },
 });

@@ -32,8 +32,15 @@ export default function RevealScreen({ route, navigation }) {
     }
   };
 
+  const handleReset = () => {
+    navigation.popToTop();
+  };
+
   return (
     <SafeAreaView style={styles.container}>
+      <TouchableOpacity style={styles.resetButton} onPress={handleReset}>
+        <Text style={styles.resetButtonText}>X</Text>
+      </TouchableOpacity>
       <View style={styles.content}>
         {/* Player indicator */}
         <Text style={styles.playerIndicator}>
@@ -197,5 +204,22 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontWeight: 'bold',
     letterSpacing: 2,
+  },
+  resetButton: {
+    position: 'absolute',
+    top: 50,
+    right: 20,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#1e3a5f',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 10,
+  },
+  resetButtonText: {
+    fontSize: 18,
+    color: '#5a6a7a',
+    fontWeight: 'bold',
   },
 });
